@@ -1,24 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState } from "react";
 
 function App() {
+  const [texto, setTexto] = useState("");
+  const [eliminar, setEliminar] = useState("");
+  const [array, setArray] = useState([
+    "Wolfgang Amadeus Mozart",
+    "Ludwig van Beethoven",
+    "Johann Sebastian Bach",
+  ]);
+
+  let mostrarArray = array.map((compositor) => {
+    return <li>{compositor}</li>;
+  });
+  let nuevoArray;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ul>{mostrarArray}</ul>
+      <input
+        type="text"
+        onChange={(e) => setTexto(e.target.value)}
+        value={texto}
+      />
+      <button
+        onClick={() => {
+          nuevoArray = [...array, texto];
+          setArray(nuevoArray);
+          setTexto("");
+        }}
+      >
+        Añadir compositor
+      </button>
+      <input
+        type="text"
+        onChange={(e) => setEliminar(e.target.value)}
+        value={eliminar}
+      />
+      <button
+        onClick={() => {
+          let nuevoNuevoArray = [...nuevoArray];
+          if (nuevoNuevoArray.indexOf(eliminar) > 0) {
+            nuevoNuevoArray.splice(nuevoNuevoArray.indexOf(eliminar), 1);
+          }
+
+          setArray(nuevoNuevoArray);
+        }}
+      >
+        Eliminar compositor
+      </button>
+    </>
   );
 }
 
