@@ -1,55 +1,90 @@
 import "./App.css";
 import { useState } from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
+//Components Import
+import Eliminar from "./Eliminar";
+import Compositores from "./Compositores";
+import Cabecera from "./Cabecera";
 
 function App() {
+  //ESTADOS
   const [texto, setTexto] = useState("");
-  const [eliminar, setEliminar] = useState("");
+  const [feedback, setFeedback] = useState("");
   const [array, setArray] = useState([
-    "Wolfgang Amadeus Mozart",
-    "Ludwig van Beethoven",
-    "Johann Sebastian Bach",
+    {
+      nombre: "Mozart",
+      fecha: 1756,
+      canciones: ["Symphonie Nr 40", "Don Giovanni"],
+    },
+    {
+      nombre: "Ludwig van Beethoven",
+      fecha: 1770,
+      canciones: ["Symphonie No.5", "Piano Sonata No.32"],
+    },
+    {
+      nombre: "Johann Sebastian Bach",
+      fecha: 1685,
+      canciones: ["Vivace", "Largo ma non tanto"],
+    },
   ]);
 
-  let mostrarArray = array.map((compositor) => {
-    return <li>{compositor}</li>;
-  });
-  let nuevoArray;
+  //FEEDBACK DE LAS ACCIONES
+  function darFeedback(string) {
+    setFeedback(string);
+    setTimeout(() => setFeedback(""), 4000);
+  }
 
   return (
-    <>
-      <ul>{mostrarArray}</ul>
-      <input
-        type="text"
-        onChange={(e) => setTexto(e.target.value)}
-        value={texto}
-      />
-      <button
-        onClick={() => {
-          nuevoArray = [...array, texto];
-          setArray(nuevoArray);
-          setTexto("");
-        }}
-      >
-        Añadir compositor
-      </button>
-      <input
-        type="text"
-        onChange={(e) => setEliminar(e.target.value)}
-        value={eliminar}
-      />
-      <button
-        onClick={() => {
-          let nuevoNuevoArray = [...nuevoArray];
-          if (nuevoNuevoArray.indexOf(eliminar) > 0) {
-            nuevoNuevoArray.splice(nuevoNuevoArray.indexOf(eliminar), 1);
-          }
+    <BrowserRouter>
+      <Cabecera />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              {/* MOSTRAR LISTA DE COMPOSITORES */}
+              <ul>
+                <Compositores array={array} />
+              </ul>
 
-          setArray(nuevoNuevoArray);
-        }}
-      >
-        Eliminar compositor
-      </button>
-    </>
+              <div>
+                {/* CAJA DE TEXTO PARA AÑADIR COMPOSITOR */}
+                <input
+                  type="text"
+                  onChange={(e) => setTexto(e.target.value)}
+                  value={texto}
+                />
+
+                {/* BOTON PARA AÑADIR COMPOSITOR */}
+                <button
+                  onClick={() => {
+                    let nuevoArray = [...array, texto];
+                    setArray(nuevoArray);
+                    setTexto("");
+                  }}
+                >
+                  Añadir compositor
+                </button>
+              </div>
+            </>
+          }
+        />
+
+        <Route
+          path="/eliminar"
+          element={
+            <Eliminar
+              array={array}
+              setArray={setArray}
+              darFeedback={darFeedback}
+            />
+          }
+        />
+      </Routes>
+      {/* ESPACIO PARA DAR EL FEEDBACK SI NO SE HA ELIMINADO COMPOSITOR */}
+      <p>{feedback}</p>
+    </BrowserRouter>
   );
 }
 
